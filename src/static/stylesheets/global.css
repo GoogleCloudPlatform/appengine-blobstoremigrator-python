@@ -1,0 +1,28 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  margin-top: 51px;
+}
+
+h1, h2, h3 {
+  font-weight: 300;
+}
+
+h4, h5, h6 {
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 14px;
+  color: #999;
+}
+
+code {
+  font-family: 'Inconsolata', "Courier New", Courier, monospace;
+  font-size: 13px;
+}
+
+pre {
+  font-family: 'Inconsolata', "Courier New", Courier, monospace;
+  font-size: 13px;
+}

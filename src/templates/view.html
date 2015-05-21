@@ -1,0 +1,37 @@
+{% extends "global.html" %}
+
+{% block title -%}
+View Blobs
+{%- endblock title %}
+
+{% block h1 -%}
+View a set of blobs
+{%- endblock h1 %}
+
+{% block content %}
+
+  <p>
+    <a href="/create-test-blobs">Create test blobs</a>
+  </p>
+
+  <dl>
+    {% for blob in blobs %}
+    <dt>{{blob.key()}}</dt>
+    <dd>
+      <dl class="dl-horizontal">
+        <dt>Content-type</dt>
+        <dd>{{blob.content_type}}</dd>
+        <dt>Created</dt>
+        <dd>{{blob.creation}}</dd>
+        <dt>Filename</dt>
+        <dd>{{blob.filename}}</dd>
+        <dt>Size</dt>
+        <dd>{{blob.size}}</dd>
+        <dt>MD5 hash</dt>
+        <dd>{{blob.md5_hash}}</dd>
+      </dl>
+    </dd>
+    {% endfor %}
+  </dl>
+
+{% endblock content %}

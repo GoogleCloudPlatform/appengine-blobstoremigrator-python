@@ -1,0 +1,37 @@
+{% extends "global.html" %}
+
+{% block title -%}
+Blob Migration Pipeline Started
+{%- endblock title %}
+
+{% block h1 -%}
+Blob migration pipeline started
+{%- endblock h1 %}
+
+{% block content %}
+  <p>
+    The Blob Migration Pipeline has been started.
+  </p>
+
+  <p>
+    <a href='/_ah/pipeline/status?root={{root_pipeline_id}}'><strong>View pipeline progress</strong></a>
+
+  </p>
+
+  <p>
+    <strong>Important:</strong>
+    This migration tool will start secondary pipelines for large files,
+    so even though this pipeline may be complete, secondary pipelines
+    may still be migrating files. Check your queues and logs to follow
+    progress.
+  </p>
+
+  <p>
+    <strong>Note:</strong>
+    the BlobInfo.all() query is eventually consistent. You may wish to re-run
+    this migration tool at a later time to pickup any blobs that were missed
+    due to eventual consistency (or if you find additional code that
+    was writing to Blobstore and need to migrate newly created blobs).
+    This tool will skip over any previously migrated blobs.
+  </p>
+{% endblock content %}
