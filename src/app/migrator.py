@@ -9,8 +9,7 @@ from google.appengine.ext import blobstore
 from mapreduce import context
 from mapreduce.mapreduce_pipeline import MapperPipeline
 from mapreduce.operation import counters
-from mapreduce.input_readers import BlobstoreLineInputReader, \
-                                    DatastoreInputReader, \
+from mapreduce.input_readers import DatastoreInputReader, \
                                     InputReader, \
                                     _get_params
 import pipeline
