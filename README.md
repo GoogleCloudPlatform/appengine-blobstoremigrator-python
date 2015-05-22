@@ -54,7 +54,7 @@ Once complete, all your blobs will have been copied to GCS under the
 bucket you specified. Further, a set of mappings from old blob key to
 GCS filename and new blob key will be found in Datastore under
 the kind `_blobmigrator_BlobKeyMapping` (this name can be modified, see
-(*Configuration settings*)[#configuration-settings] below).
+[*Configuration settings*](#configuration-settings) below).
 
 ## Catch-up migrations and re-migrations
 
