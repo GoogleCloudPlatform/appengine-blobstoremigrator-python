@@ -5,8 +5,12 @@ all of your Blobstore blobs into a Google Cloud Storage (GCS) bucket.
 In doing so, the tool will store a Datastore mapping from the existing
 blob key to the GCS filename. Additionally, it is possible to create
 a blob key for the new GCS file that can be used with other existing
-Google App Engine APIs (like Image API); this new blob key is also
-stored in the Datastore mapping.
+Google App Engine APIs (e.g.,
+[Image API](https://cloud.google.com/appengine/docs/python/images/imageclass#Image));
+this new blob key is also stored in the Datastore mapping.
+
+**Note:** this library is written in Python, but because it is a stand-alone
+module, it can be used on any App Engine application.
 
 ## Getting started
 
