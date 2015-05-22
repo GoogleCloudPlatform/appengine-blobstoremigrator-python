@@ -54,7 +54,7 @@ GCS filename and new blob key will be found in Datastore under
 the kind `_blobmigrator_BlobKeyMapping` (this name can be modified, see
 "Configuration settings" below).
 
-## Re-migrating and catch-up migrations
+## Catch-up migrations and re-migrations
 
 The migration tool will skip over blobs that have already been migrated,
 so it is safe and efficient to run multiple migrations. This is helpful
@@ -62,6 +62,11 @@ because the BlobInfo query is eventually consistent, so if your
 application is still writing to Blobstore, or you later find some obscure
 code that was continuing to write to Blobstore, you can safely re-run
 this migration to catch-up blobs.
+
+If you need to re-migrate some of all of the blobs for some reason,
+you can simply delete the appropriate entities in the Datastore
+kind `_blobmigrator_BlobKeyMapping`. This tool uses those entities as
+the signal that a particular blob has been previously migrated.
 
 ## Configuration settings
 
