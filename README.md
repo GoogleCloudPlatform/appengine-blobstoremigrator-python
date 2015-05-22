@@ -14,7 +14,7 @@ This tool will upload to App Engine as a new module named `blob-migrator`.
 Unless you happen to already have a module of that name, you can simply
 upload the code without impacting your existing application. (If you do
 happen to have a module of that name, you can change this tool by editing
-`src/app.yaml` `module: blob-migrator`.)
+`src/app.yaml`; search for "`module: blob-migrator`".)
 
 Upload the `src` directory of this repository to your App Engine application
 using `appcfg.py`:
@@ -23,26 +23,26 @@ using `appcfg.py`:
     $ appcfg.py update src -A [application-id] -V migrator
 ```
 
-If you are a user of Cloud SDK, you can use the following commands
-in place of the above command:
+If you are a user of [Cloud SDK](https://cloud.google.com/sdk/),
+you can use the following commands in place of the above command:
 
 ```
-    $ gcloud auth login
+  $ gcloud auth login
 
-    $ gcloud config set project [application-id]
+  $ gcloud config set project [application-id]
 
-    $ gcloud preview app deploy src/app.yaml --version migrator
+  $ gcloud preview app deploy src/app.yaml --version migrator
 ```
 
 Once the application is uploaded, simply hit the home page of the module:
 
 ```
-    https://migrator.blob-migrator.[application-id].appspot.com
+  https://migrator.blob-migrator.[application-id].appspot.com
 ```
 
 Follow the on-screen instructions, but effectively, all you have to do
 is enter the name of a GCS bucket that your application has write access
-to and click *Start migration*.
+to and click **Start migration**.
 
 ## Re-migrating and catch-up migrations
 
