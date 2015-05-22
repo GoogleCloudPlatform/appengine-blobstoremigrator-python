@@ -24,7 +24,7 @@ Upload the `src` directory of this repository to your App Engine application
 using `appcfg.py`:
 
 ```
-    $ appcfg.py update src -A [application-id] -V migrator
+  $ appcfg.py update src -A [application-id] -V migrator
 ```
 
 If you are a user of [Cloud SDK](https://cloud.google.com/sdk/),
