@@ -38,7 +38,7 @@ you can use the following commands in place of the above command:
   $ gcloud preview app deploy src/app.yaml --version migrator
 ```
 
-Once the application is uploaded, simply hit the home page of the module:
+Once this tool is uploaded, simply hit the home page of the module:
 
 ```
   https://migrator.blob-migrator.[application-id].appspot.com
@@ -65,18 +65,23 @@ this migration to catch-up blobs.
 
 ## Configuration settings
 
-See details in `appengine_config.py` for settings that can be made.
-For example, you can set the root directory of all the migrated files
-on GCS (`ROOT_GCS_FOLDER`) or the name of the kind that stores the key
-mappings on Datastore (`MAPPING_DATASTORE_KIND_NAME`).
-Of course, if you edit these settings, you will need to re-upload the tool.
+See details in `appengine_config.py` for configurations that can be adjusted.
+For example, you can set the root directory within the bucker for all the
+migrated files on GCS (`ROOT_GCS_FOLDER`) or the name of the kind that stores
+the key mappings on Datastore (`MAPPING_DATASTORE_KIND_NAME`).
+Of course, if you edit these settings, you will need to re-upload this tool
+for the changes to take effect.
 
 ## Files API
 
-The test code of this application uses the deprecated Files API to create
+The test code of this tool uses the deprecated Files API to create
 test blobs. If you get a notice from Google that your application is
-still using this deprecated API, please remember that this tool is using
-this API.
+still using the deprecated Files API, please remember that this tool
+may be the cause of this.
 
 This tool uses the Files API only for test code; it is not part of the
 mainline migration facility.
+
+Once all your blobs have been migrated successfully, you can delete this
+module completely from your application; the blob mappings in Datastore
+will remain.
