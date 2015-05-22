@@ -38,7 +38,9 @@ you can use the following commands in place of the above command:
   $ gcloud preview app deploy src/app.yaml --version migrator
 ```
 
-Once this tool is uploaded, simply hit the home page of the module:
+Once this tool is uploaded, simply hit the home page of the module.
+(Don't worry! The migration will not start immediately; you'll
+see some instructions first.)
 
 ```
   https://migrator.blob-migrator.[application-id].appspot.com
