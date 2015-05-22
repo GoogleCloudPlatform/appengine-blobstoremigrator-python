@@ -48,6 +48,12 @@ Follow the on-screen instructions, but effectively, all you have to do
 is enter the name of a GCS bucket that your application has write access
 to and click **Start migration**.
 
+Once complete, all your blobs will have been copied to GCS under the
+bucket you specified. Further, a set of mappings from old blob key to
+GCS filename and new blob key will be found in Datastore under
+the kind `_blobmigrator_BlobKeyMapping` (this name can be modified, see
+"Configuration settings" below).
+
 ## Re-migrating and catch-up migrations
 
 The migration tool will skip over blobs that have already been migrated,
