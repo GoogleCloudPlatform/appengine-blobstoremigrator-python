@@ -310,7 +310,7 @@ class MigrateSingleBlobPipeline(pipeline.Pipeline):
     }
     if filename:
       output_writer_params['content_disposition'] = \
-        build_content_disposition(filename)
+        build_content_disposition(filename.encode('utf8'))
 
     params = {
       'blob_key': blob_key_str,
@@ -336,7 +336,7 @@ def migrate_single_blob_inline(blob_info, bucket_name):
   options = {}
   if blob_info.filename:
     options['content-disposition'] = \
-      build_content_disposition(blob_info.filename)
+      build_content_disposition(blob_info.filename.encode('utf8'))
 
   gcs_filename = build_gcs_filename(blob_info,
                                     filename=blob_info.filename,
@@ -346,7 +346,7 @@ def migrate_single_blob_inline(blob_info, bucket_name):
 
   blob_reader = blobstore.BlobReader(blob_info, buffer_size=BLOB_BUFFER_SIZE)
 
-  gcs_file = cloudstorage.open(gcs_filename,
+  gcs_file = cloudstorage.open(gcs_filename.encode('utf8'),
                                mode='w',
                                content_type=blob_info.content_type,
                                options=options)
