@@ -1,0 +1,53 @@
+{% extends "global.html" %}
+
+{% block title -%}
+Blob Upload Succeeded
+{%- endblock title %}
+
+{% block h1 -%}
+Blob upload succeeded
+{%- endblock h1 %}
+
+{% block content %}
+  {% if errors %}
+    <div class="butter bg-danger">
+      <p>
+        The following errors occurred:
+        <ul>
+          {% for error in errors %}
+            <li>{{error|safe}}</li>
+          {% endfor %}
+        </ul>
+      </p>
+    </div>
+  {% endif %}
+
+  {% if blob_info %}
+    <p>
+      The blob upload succeeded.
+      <dl class="dl-horizontal">
+        <dt>BlobKey</dt>
+        <dd>{{blob_info.key()}}</dd>
+        <dt>Content-type</dt>
+        <dd>{{blob_info.content_type}}</dd>
+        <dt>Created</dt>
+        <dd>{{blob_info.creation}}</dd>
+        <dt>Filename</dt>
+        <dd>{{blob_info.filename}}</dd>
+        <dt>Size</dt>
+        <dd>{{blob_info.size}}</dd>
+        <dt>MD5 hash</dt>
+        <dd>{{blob_info.md5_hash}}</dd>
+      </dl>
+    </p>
+  {% endif %}
+
+  {% if serving_url %}
+    <img src='{{serving_url}}'>
+  {% endif %}
+
+  <p>
+    <a href='/upload-blob'><strong>Upload another</strong></a>
+  </p>
+
+{% endblock content %}
