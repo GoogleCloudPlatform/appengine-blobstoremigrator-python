@@ -76,6 +76,7 @@ class IndexView(UserView):
   def get(self):
     """GET"""
     context = self._get_base_context()
+    context['bucket'] = app_identity.get_default_gcs_bucket_name() or ''
     self.render_response('index.html', **context)
 
   def post(self):
