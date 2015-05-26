@@ -18,7 +18,9 @@ Global configuration for all WSGI apps.
 import os
 import logging
 
+
 IS_DEVSERVER = os.environ.get('SERVER_SOFTWARE', '').lower().startswith('devel')
+
 
 if IS_DEVSERVER:
   logging.getLogger().handlers[0].setLevel(logging.DEBUG)
@@ -30,6 +32,7 @@ def webapp_add_wsgi_middleware(app):
   if IS_DEVSERVER:
     logging.debug('\n\n\n')  # space on console between requests
   return app
+
 
 # NUM_SHARDS
 #   The number of shards that will map over the BlobInfo records.

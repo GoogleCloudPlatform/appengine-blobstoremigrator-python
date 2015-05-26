@@ -15,24 +15,23 @@
 """
 Tests for app.migrator
 """
-import uuid
 import types
+import uuid
 
-from google.appengine.ext import blobstore
-from google.appengine.api import files
-from google.appengine.api.files.blobstore \
-  import get_blob_key as files_get_blob_key
 import cloudstorage
+from google.appengine.api import files
+from google.appengine.api.files import blobstore as files_blobstore
+from google.appengine.ext import blobstore
 
+from app import config
 from app import migrator
-from app.config import config
-from app.models import BlobKeyMapping
+from app import models
 
-import mock
-from test.base import BlobMigratorTestCase
+from test import mock
+from test import base
 
-VALID_BLOB_KEY = '3DBGQDc4oLFrHJMBXaaG3mjVaJ8dEAP0' + \
-                 'EC9lijDZgOohYkIWv7EnWpowcavJq7g8'
+VALID_BLOB_KEY = ('3DBGQDc4oLFrHJMBXaaG3mjVaJ8dEAP0' +
+                  'EC9lijDZgOohYkIWv7EnWpowcavJq7g8')
 
 
 def _write_gcs_file(data, bucket_name='my-bucket', filename=None):
@@ -56,14 +55,15 @@ def _write_blob(data, content_type=None, filename=None):
   with files.open(output_filename, 'a') as outfile:
     outfile.write(data)
   files.finalize(output_filename)
-  blob_key = files_get_blob_key(output_filename)
+  blob_key = files_blobstore.get_blob_key(output_filename)
   blob_info = blobstore.BlobInfo.get(blob_key)
   return blob_info
 
 
 def _get_blob_info_with_gcs_filename(gcs_filename):
   """Returns a blob_info for using a gcs_filename."""
-  query = BlobKeyMapping.query(BlobKeyMapping.gcs_filename==gcs_filename)
+  query = models.BlobKeyMapping.query(
+      models.BlobKeyMapping.gcs_filename==gcs_filename)
   blob_key_str = query.get().new_blob_key
   blob_key = blobstore.BlobKey(blob_key_str)
   blob_info = blobstore.BlobInfo.get(blob_key)
@@ -77,7 +77,7 @@ def _get_blob_with_gcs_filename(gcs_filename):
   return blob_reader.read()
 
 
-class GetBlobKeyStrTests(BlobMigratorTestCase):
+class GetBlobKeyStrTests(base.BlobMigratorTestCase):
   """
   Tests for migrator._get_blob_key_str()
   """
@@ -107,7 +107,7 @@ class GetBlobKeyStrTests(BlobMigratorTestCase):
       migrator._get_blob_key_str(123)
 
 
-class MigrateBlobTests(BlobMigratorTestCase):
+class MigrateBlobTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.migrate_blob()
   """
@@ -118,11 +118,11 @@ class MigrateBlobTests(BlobMigratorTestCase):
       'entity_kind': 'google.appengine.ext.blobstore.blobstore.BlobInfo',
       'bucket_name': self.bucket_name,
     }
-    self.__old_is_devserver = migrator.IS_DEVSERVER
+    self.__old_is_devserver = migrator.appengine_config.IS_DEVSERVER
 
   def tearDown(self):
     super(MigrateBlobTests, self).tearDown()
-    migrator.IS_DEVSERVER = self.__old_is_devserver
+    migrator.appengine_config.IS_DEVSERVER = self.__old_is_devserver
 
   def call_migrate_blob(self, blob_info):
     """Calls the function under test, performing dependency injection."""
@@ -136,8 +136,8 @@ class MigrateBlobTests(BlobMigratorTestCase):
     query = blobstore.BlobInfo.all()
     result = []
     for blob_info in query:
-      if not include_gcs_simulations and \
-        str(blob_info.key()).startswith('encoded_gs_file:'):
+      if (not include_gcs_simulations and
+          str(blob_info.key()).startswith('encoded_gs_file:')):
         continue
       result.append(blob_info)
       if len(result) == number:
@@ -146,7 +146,7 @@ class MigrateBlobTests(BlobMigratorTestCase):
 
   def assertNumberOfStoredBlobs(self, expected, include_gcs_simulations=False):
     """Asserts the number of blobs stored."""
-    blobs = self.fetch_blobs(expected+1, \
+    blobs = self.fetch_blobs(expected+1,
                              include_gcs_simulations=include_gcs_simulations)
     self.assertEquals(expected, len(blobs))
 
@@ -159,7 +159,7 @@ class MigrateBlobTests(BlobMigratorTestCase):
                                    include_gcs_simulations=True)
 
   def test_gcs_simulated_blobs_on_devappserver_do_not_migrate(self):
-    migrator.IS_DEVSERVER = True
+    migrator.appengine_config.IS_DEVSERVER = True
     gcs_filename = _write_gcs_file('1')
     # assert some pre-conditions which might change over time
     self.assertNumberOfRealBlobs(0)
@@ -180,8 +180,8 @@ class MigrateBlobTests(BlobMigratorTestCase):
 
     # drive it through a second time
     inline_patcher = mock.patch('app.migrator.migrate_single_blob_inline')
-    pipeline_patcher = \
-      mock.patch('app.migrator.MigrateSingleBlobPipeline.start')
+    pipeline_patcher = mock.patch(
+        'app.migrator.MigrateSingleBlobPipeline.start')
     inline_mock = inline_patcher.start()
     pipeline_mock = pipeline_patcher.start()
     try:
@@ -213,7 +213,7 @@ class MigrateBlobTests(BlobMigratorTestCase):
   @mock.patch('app.migrator.migrate_single_blob_inline')
   def test_large_blobs_start_pipeline(self,
                                       inline_mock=None, pipeline_mock=None):
-    config.DIRECT_MIGRATION_MAX_SIZE = 100
+    config.config.DIRECT_MIGRATION_MAX_SIZE = 100
     blob_info = _write_blob('1' * 200)
 
     # drive a blob through the migration
@@ -222,7 +222,7 @@ class MigrateBlobTests(BlobMigratorTestCase):
     self.assertEquals(1, pipeline_mock.call_count)
 
 
-class YieldDataTests(BlobMigratorTestCase):
+class YieldDataTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.yield_data()
   """
@@ -241,13 +241,13 @@ class YieldDataTests(BlobMigratorTestCase):
       next(generator)
 
 
-class BuildGCSFilenameTests(BlobMigratorTestCase):
+class BuildGCSFilenameTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.build_gcs_filename()
   """
   def setUp(self):
     super(BuildGCSFilenameTests, self).setUp()
-    config.ROOT_GCS_FOLDER = 'foo'
+    config.config.ROOT_GCS_FOLDER = 'foo'
     self.blob_part = '%s/%s/%s/%s/%s' % (VALID_BLOB_KEY[0:8],
                                          VALID_BLOB_KEY[8:10],
                                          VALID_BLOB_KEY[10:12],
@@ -255,38 +255,38 @@ class BuildGCSFilenameTests(BlobMigratorTestCase):
                                          VALID_BLOB_KEY)
 
   def test_gcs_filename_starts_with_configured_root(self):
-    config.ROOT_GCS_FOLDER = 'foo'
+    config.config.ROOT_GCS_FOLDER = 'foo'
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY)
     self.assertEquals('foo/%s' % self.blob_part, gcs_filename)
 
   def test_gcs_filename_can_have_leading_slash_added(self):
-    config.ROOT_GCS_FOLDER = 'foo'
+    config.config.ROOT_GCS_FOLDER = 'foo'
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY,
                                                include_leading_slash=True)
     self.assertEquals('/foo/%s' % self.blob_part, gcs_filename)
 
   def test_configured_root_can_be_empty(self):
-    config.ROOT_GCS_FOLDER = ''
+    config.config.ROOT_GCS_FOLDER = ''
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY)
     self.assertEquals(self.blob_part, gcs_filename)
 
   def test_configured_root_can_be_None(self):
-    config.ROOT_GCS_FOLDER = None
+    config.config.ROOT_GCS_FOLDER = None
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY)
     self.assertEquals(self.blob_part, gcs_filename)
 
   def test_configured_root_can_start_with_slash(self):
-    config.ROOT_GCS_FOLDER = '/foo'
+    config.config.ROOT_GCS_FOLDER = '/foo'
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY)
     self.assertEquals('foo/%s' % self.blob_part, gcs_filename)
 
   def test_configured_root_can_end_with_slash(self):
-    config.ROOT_GCS_FOLDER = 'foo/'
+    config.config.ROOT_GCS_FOLDER = 'foo/'
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY)
     self.assertEquals('foo/%s' % self.blob_part, gcs_filename)
 
   def test_configured_root_can_have_multiple_levels(self):
-    config.ROOT_GCS_FOLDER = 'foo/bar'
+    config.config.ROOT_GCS_FOLDER = 'foo/bar'
     gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY)
     self.assertEquals('foo/bar/%s' % self.blob_part, gcs_filename)
 
@@ -297,8 +297,8 @@ class BuildGCSFilenameTests(BlobMigratorTestCase):
 
   def test_gcs_filename_can_have_filename_appended(self):
     filename = 'my-file.txt'
-    gcs_filename = \
-      migrator.build_gcs_filename(VALID_BLOB_KEY, filename=filename)
+    gcs_filename = migrator.build_gcs_filename(VALID_BLOB_KEY,
+                                               filename=filename)
     self.assertEquals('foo/%s/%s' % (self.blob_part, filename), gcs_filename)
 
   def test_bucket_name_added_if_flag_set(self):
@@ -330,7 +330,7 @@ class BuildGCSFilenameTests(BlobMigratorTestCase):
                                                  bucket_name='not valid')
 
 
-class BuildContentDispositionTests(BlobMigratorTestCase):
+class BuildContentDispositionTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.build_content_disposition()
   """
@@ -345,7 +345,7 @@ class BuildContentDispositionTests(BlobMigratorTestCase):
     self.assertEquals('attachment; filename=foo.txt', disposition)
 
 
-class MigrateSingleBlobInlineTests(BlobMigratorTestCase):
+class MigrateSingleBlobInlineTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.migrate_single_blob_inline()
   """
@@ -388,7 +388,8 @@ class MigrateSingleBlobInlineTests(BlobMigratorTestCase):
   def test_blob_key_mapping_written_to_datastore(self):
     blob_info = _write_blob('1')
     gcs_filename = migrator.migrate_single_blob_inline(blob_info, 'my-bucket')
-    query = BlobKeyMapping.query(BlobKeyMapping.gcs_filename==gcs_filename)
+    query = models.BlobKeyMapping.query(
+        models.BlobKeyMapping.gcs_filename==gcs_filename)
     entities = query.fetch(2)
     self.assertEquals(1, len(entities))
     entity = entities[0]
@@ -396,7 +397,7 @@ class MigrateSingleBlobInlineTests(BlobMigratorTestCase):
     self.assertEquals(str(blob_info.key()), entity.old_blob_key)
 
 
-class WriteTestFileTests(BlobMigratorTestCase):
+class WriteTestFileTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.write_test_file()
   """
@@ -414,7 +415,7 @@ class WriteTestFileTests(BlobMigratorTestCase):
       migrator.write_test_file('unauthed-bucket')
 
 
-class StoreMappingEntityTests(BlobMigratorTestCase):
+class StoreMappingEntityTests(base.BlobMigratorTestCase):
   """
   Tests for migrator.store_mapping_entity()
   """

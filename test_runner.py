@@ -21,6 +21,7 @@ CUR_DIR = os.path.dirname(__file__)
 SRC_DIR = os.path.join(CUR_DIR, 'src')
 TEST_DIR = os.path.join(CUR_DIR, 'test')
 
+
 def _fix_path():
   """
   Finds the google_appengine directory and fixes Python imports to use it.
@@ -41,11 +42,15 @@ def _fix_path():
       sys.path.extend(dev_appserver.EXTRA_PATHS)
       return
 
+
 _fix_path()
 
+
 def run_tests():
+  """Run all unit tests."""
   suite = unittest.TestLoader().discover(TEST_DIR, pattern='*_test.py')
   unittest.TextTestRunner(verbosity=1).run(suite)
+
 
 if __name__ == '__main__':
   run_tests()

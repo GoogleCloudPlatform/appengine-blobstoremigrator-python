@@ -17,6 +17,6 @@ Main WSGI app for blob-migrator tool.
 """
 import webapp2
 
-from app.routes import ROUTES
+from app import routes
 
-APP = webapp2.WSGIApplication(ROUTES)
+APP = webapp2.WSGIApplication(routes.ROUTES)

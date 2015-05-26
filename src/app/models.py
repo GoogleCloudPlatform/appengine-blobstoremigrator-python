@@ -17,7 +17,7 @@ Models for blob-migrator tool.
 """
 from google.appengine.ext import ndb
 
-from app.config import config
+from app import config
 
 
 class BlobKeyMapping(ndb.Model):
@@ -36,7 +36,7 @@ class BlobKeyMapping(ndb.Model):
   @classmethod
   def _get_kind(cls):
     """Returns the kind name."""
-    return config.MAPPING_DATASTORE_KIND_NAME
+    return config.config.MAPPING_DATASTORE_KIND_NAME
 
   @classmethod
   def build_key(cls, key_str):

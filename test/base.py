@@ -15,7 +15,6 @@
 """
 Utilities and fixtures for tests.
 """
-import copy
 import unittest
 
 from google.appengine.api import lib_config
