@@ -19,7 +19,7 @@ threadsafe: yes
 module: blob-migrator
 
 includes:
-- mapreduce/include.yaml
+- lib/mapreduce/include.yaml
 
 libraries:
 - name: webob
