@@ -20,6 +20,7 @@ import unittest
 CUR_DIR = os.path.dirname(__file__)
 SRC_DIR = os.path.join(CUR_DIR, 'src')
 TEST_DIR = os.path.join(CUR_DIR, 'test')
+LIB_DIR = os.path.join(SRC_DIR, 'lib')
 
 
 def _fix_path():
@@ -30,6 +31,8 @@ def _fix_path():
   """
   if SRC_DIR not in sys.path:
     sys.path.append(SRC_DIR)
+  if LIB_DIR not in sys.path:
+    sys.path.append(LIB_DIR)
   all_paths = os.environ.get('PYTHONPATH').split(os.pathsep)
   for path_dir in all_paths:
     dev_appserver_path = os.path.join(path_dir, 'dev_appserver.py')

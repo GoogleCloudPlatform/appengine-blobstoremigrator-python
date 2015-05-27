@@ -426,7 +426,6 @@ def migrate_single_blob_inline(blob_info, bucket_name):
       gcs_file.write(chunk)
       chunk = blob_reader.read(BLOB_BUFFER_SIZE)
   finally:
-    gcs_file.flush()
     gcs_file.close()
 
   store_mapping_entity(blob_info, gcs_filename)
@@ -453,7 +452,6 @@ def write_test_file(bucket_name, delete=True):
   try:
     gcs_file.write('1')
   finally:
-    gcs_file.flush()
     gcs_file.close()
   if delete:
     cloudstorage.delete(gcs_filename)

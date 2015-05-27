@@ -39,7 +39,6 @@ def _write_gcs_file(data, bucket_name='my-bucket', filename=None):
   gcs_filename = '/%s/%s' % (bucket_name, filename or uuid.uuid4().hex.lower())
   gcs_file = cloudstorage.open(gcs_filename, mode='w')
   gcs_file.write(data)
-  gcs_file.flush()
   gcs_file.close()
   return gcs_filename
 
