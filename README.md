@@ -20,6 +20,15 @@ upload the code without impacting your existing application. (If you do
 happen to have a module of that name, you can change this tool by editing
 `src/app.yaml`; search for "`module: blob-migrator`".)
 
+First build the source (i.e., download the required libraries) using
+the following command:
+
+```
+  $ ./build.sh build
+```
+
+This will populate the `src/lib` folder with the required libraries.
+
 Upload the `src` directory of this repository to your App Engine application
 using `appcfg.py`:
 
