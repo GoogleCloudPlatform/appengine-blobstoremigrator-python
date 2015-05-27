@@ -101,7 +101,7 @@ class IndexView(UserView):
         errors.append('Invalid bucket name. %s' % e.message)
 
     # try to write a small file
-    if bucket:
+    if not errors:
       try:
         migrator.write_test_file(bucket)
       except Exception as e:

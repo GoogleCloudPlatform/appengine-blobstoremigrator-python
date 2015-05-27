@@ -16,14 +16,23 @@
 Global configuration for all WSGI apps.
 """
 import os
+import sys
 import logging
 
 
 IS_DEVSERVER = os.environ.get('SERVER_SOFTWARE', '').lower().startswith('devel')
+CUR_DIR = os.path.dirname(__file__)
+LIB_DIR = os.path.join(CUR_DIR, 'lib')
 
 
 if IS_DEVSERVER:
   logging.getLogger().handlers[0].setLevel(logging.DEBUG)
+
+
+def fix_path():
+  if LIB_DIR not in sys.path:
+    sys.path.append(LIB_DIR)
+fix_path()
 
 
 def webapp_add_wsgi_middleware(app):
