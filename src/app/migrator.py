@@ -213,7 +213,6 @@ def migrate_blob(blob_info, _mapper_params=None):
 
   # else start a full-scale pipeline to handle the blob migration
   else:
-    # start a new pipeline to migrate the blob
     pipeline = MigrateSingleBlobPipeline(blob_key_str,
                                          blob_info.filename,
                                          blob_info.content_type,
