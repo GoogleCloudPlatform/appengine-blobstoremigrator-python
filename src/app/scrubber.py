@@ -22,6 +22,7 @@ from mapreduce.operation import db
 import pipeline
 
 from app import config
+from app import models
 
 
 def delete_mapping_entity(mapping_entity):
@@ -66,13 +67,17 @@ class DeleteBlobstoreToGcsFilenameMappings(pipeline.Pipeline):
 
 
 def delete_blobstore_blob(blob_info):
-  """Deletes the blobstore blob.
+  """Deletes the blobstore blob if and only if a mapping entity exists.
 
   Args:
     blob_info: The BlobInfo for the blob to delete.
   """
-  blob_info.delete()
-  yield counters.Increment('blobs_deleted')
+  key = models.BlobKeyMapping.build_key(str(blob_info.key()))
+  if key.get():
+    blob_info.delete()
+    yield counters.Increment('blobs_deleted')
+  else:
+    yield counters.Increment('no_mapping_entity_found_blob_not_deleted')
 
 
 class DeleteBlobstoreBlobs(pipeline.Pipeline):

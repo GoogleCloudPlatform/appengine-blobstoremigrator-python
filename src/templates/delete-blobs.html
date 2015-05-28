@@ -11,7 +11,8 @@ Delete source blobs
 {% block content %}
   <p>
     This form can be used to permanently delete all the blobs
-    from Blobstore.
+    from Blobstore that have a corresponding mapping entity
+    in <code>{{mapping_kind}}</code>.
   </p>
 
   <div class="well">
@@ -41,7 +42,9 @@ Delete source blobs
         </p>
 
         <p>
-          <strong>THIS WILL PERMANENTLY DELETE ALL THE BLOBS IN BLOBSTORE!</strong>
+          <strong>THIS WILL PERMANENTLY DELETE ALL THE BLOBS IN BLOBSTORE
+          that have a corresponding mapping entity in
+          <code>{{mapping_kind}}</code>!</strong>
         </p>
       </div>
 
@@ -66,7 +69,8 @@ Delete source blobs
         <div class="checkbox">
           <label>
             <input type="checkbox" name="confirm">
-            Yes, I want to delete all blobs from Blobstore.
+            Yes, I want to delete all blobs from Blobstore that have a
+            corresponding mapping entity in <code>{{mapping_kind}}</code>.
           </label>
         </div>
         <div class="form-group">

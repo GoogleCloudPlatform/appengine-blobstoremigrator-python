@@ -106,6 +106,8 @@ for the changes to take effect.
 ## Deleting all blobs
 
 You can use the following tool to delete *all* blobs in Blobstore.
+Blobs are only deleted if a mapping `_blobmigrator_BlobKeyMapping`
+entity for the blob exists in Datastore.
 
 ```
   https://migrator.blob-migrator.[application-id].appspot.com/delete-source-blobs
