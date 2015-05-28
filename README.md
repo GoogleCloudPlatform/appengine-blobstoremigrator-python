@@ -111,7 +111,7 @@ You can use the following tool to delete *all* blobs in Blobstore.
   https://migrator.blob-migrator.[application-id].appspot.com/delete-source-blobs
 ```
 
-**IMPORTANT** This action permanently deletes all blobs in Blobstore.
+**IMPORTANT** This action _permanently_ _deletes_ all blobs in Blobstore.
 Before using this tool, you must ensure that all the blobs have
 been migrated correctly to Cloud Storage and all the
 `_blobmigrator_BlobKeyMapping` entities have been created correctly.
