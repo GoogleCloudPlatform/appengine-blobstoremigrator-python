@@ -27,6 +27,7 @@ import webapp2
 
 from app import config
 from app import migrator
+from app import scrubber
 import appengine_config
 
 
@@ -118,7 +119,77 @@ class IndexView(UserView):
       return
 
     pipeline = migrator.MigrateAllBlobsPipeline(bucket)
-    pipeline.start()
+    pipeline.start(queue_name=config.config.QUEUE_NAME)
 
     context['root_pipeline_id'] = pipeline.root_pipeline_id
     self.render_response('started.html', **context)
+
+
+class DeleteMappingEntitiesView(UserView):
+  """Forms to delete the Blobstore->GCS mapping entities from Datastore.
+
+  DO NOT USE THIS AFTER DELETING SOURCE BLOBS!!!
+  """
+
+  def _get_base_context(self):
+    """Generates a context for both GET and POST."""
+    context = {
+      'mapping_kind': config.config.MAPPING_DATASTORE_KIND_NAME,
+    }
+    return context
+
+  def get(self):
+    """GET"""
+    context = self._get_base_context()
+    self.render_response('delete-mappings.html', **context)
+
+  def post(self):
+    """POST"""
+    context = self._get_base_context()
+    confirm = 'confirm' in self.request.POST
+    errors = []
+    if not confirm:
+      errors.append('You must select the checkbox if you want to delete the ' +
+                    'Blobstore to Cloud Storage mapping entities.')
+    if errors:
+      context['errors'] = errors
+    else:
+      pipeline = scrubber.DeleteBlobstoreToGcsFilenameMappings()
+      pipeline.start(queue_name=config.config.QUEUE_NAME)
+      context['pipeline_id'] = pipeline.root_pipeline_id
+    self.render_response('delete-mappings.html', **context)
+
+
+class DeleteSourceBlobsView(UserView):
+  """Forms to delete the source blobs.
+
+  VERIFY THAT ALL BLOBS CORRECTLY MIGRATED BEFORE USING THIS!!!
+  """
+
+  def _get_base_context(self):
+    """Generates a context for both GET and POST."""
+    context = {
+      'mapping_kind': config.config.MAPPING_DATASTORE_KIND_NAME,
+    }
+    return context
+
+  def get(self):
+    """GET"""
+    context = self._get_base_context()
+    self.render_response('delete-blobs.html', **context)
+
+  def post(self):
+    """POST"""
+    context = self._get_base_context()
+    confirm = 'confirm' in self.request.POST
+    errors = []
+    if not confirm:
+      errors.append('You must select the checkbox if you want to delete the ' +
+                    'source blobs.')
+    if errors:
+      context['errors'] = errors
+    else:
+      pipeline = scrubber.DeleteBlobstoreBlobs()
+      pipeline.start(queue_name=config.config.QUEUE_NAME)
+      context['pipeline_id'] = pipeline.root_pipeline_id
+    self.render_response('delete-blobs.html', **context)

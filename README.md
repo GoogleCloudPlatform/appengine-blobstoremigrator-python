@@ -79,6 +79,21 @@ you can simply delete the appropriate entities in the Datastore
 kind `_blobmigrator_BlobKeyMapping`. This tool uses those entities as
 the signal that a particular blob has been previously migrated.
 
+If you want to re-migrate *all* the blobs and
+you have a large number of mapping entities,
+you can use the following tool to
+remove all the `_blobmigrator_BlobKeyMapping` entities:
+
+```
+  https://migrator.blob-migrator.[application-id].appspot.com/delete-mapping-entities
+```
+
+**IMPORTANT** Do not use this tool if you have deleted your source
+blobs (see [*Deleting all blobs*](#deleting-all-blobs) below).
+If you delete these entities after the blobs have been deleted, then
+it will be extremely difficult to use the newly created
+Cloud Storage files.
+
 ## Configuration settings
 
 See details in `appengine_config.py` for configurations that can be adjusted.
@@ -87,6 +102,19 @@ migrated files on GCS (`ROOT_GCS_FOLDER`) or the name of the kind that stores
 the key mappings on Datastore (`MAPPING_DATASTORE_KIND_NAME`).
 Of course, if you edit these settings, you will need to re-upload this tool
 for the changes to take effect.
+
+## Deleting all blobs
+
+You can use the following tool to delete *all* blobs in Blobstore.
+
+```
+  https://migrator.blob-migrator.[application-id].appspot.com/delete-source-blobs
+```
+
+**IMPORTANT** This action permanently deletes all blobs in Blobstore.
+Before using this tool, you must ensure that all the blobs have
+been migrated correctly to Cloud Storage and all the
+`_blobmigrator_BlobKeyMapping` entities have been created correctly.
 
 ## Files API
 

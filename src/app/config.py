@@ -47,15 +47,20 @@ class _ConfigDefaults(object):
   MAPPING_DATASTORE_KIND_NAME
     The name of the Datastore kind that will hold the mapping from old
     blob key to new GCS filename and new blob key.
+
+  QUEUE_NAME
+    Specifies the queue to run the mapper jobs in.
   """
 
   NUM_SHARDS = 16
 
   ROOT_GCS_FOLDER = '_blobmigrator_root'
 
-  DIRECT_MIGRATION_MAX_SIZE = 5 * 1024 * 1024
+  DIRECT_MIGRATION_MAX_SIZE = 20 * 1024 * 1024
 
   MAPPING_DATASTORE_KIND_NAME = '_blobmigrator_BlobKeyMapping'
+
+  QUEUE_NAME = 'default'
 
 
 # This is a bit of a hack but does the trick for the UI.

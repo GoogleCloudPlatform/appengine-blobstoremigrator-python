@@ -1,0 +1,82 @@
+{% extends "global.html" %}
+
+{% block title -%}
+Delete Source Blobs
+{%- endblock title %}
+
+{% block h1 -%}
+Delete source blobs
+{%- endblock h1 %}
+
+{% block content %}
+  <p>
+    This form can be used to permanently delete all the blobs
+    from Blobstore.
+  </p>
+
+  <div class="well">
+    <h4>Delete ALL blobs</h4>
+
+    {% if pipeline_id %}
+
+      <p>
+        The pipeline to delete all blobs has been started.
+      </p>
+
+      <p>
+        <a href='/_ah/pipeline/status?root={{pipeline_id}}'><strong>View pipeline progress</strong></a>
+
+      </p>
+
+
+    {% else %}
+
+      <div class="butter bg-warning">
+        <p>
+        <strong>IMPORTANT!</strong>
+        Do not use this tool unless you have verified that all the blobs
+        have been correctly migrated and the Blobstore to Cloud Storage
+        mapping entities in <code>{{mapping_kind}}</code> were all
+        created correctly.
+        </p>
+
+        <p>
+          <strong>THIS WILL PERMANENTLY DELETE ALL THE BLOBS IN BLOBSTORE!</strong>
+        </p>
+      </div>
+
+      {% if message %}
+        <p class="butter bg-success">{{message|safe}}</p>
+      {% endif %}
+
+      {% if errors %}
+        <div class="butter bg-danger">
+          <p>
+            The following errors occurred:
+            <ul>
+              {% for error in errors %}
+                <li>{{error|safe}}</li>
+              {% endfor %}
+            </ul>
+          </p>
+        </div>
+      {% endif %}
+
+      <form class="form-horizontal" method="post">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="confirm">
+            Yes, I want to delete all blobs from Blobstore.
+          </label>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-0 col-sm-12">
+            <button type="submit" class="btn btn-default">Delete blobs</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  {% endif %}
+
+{% endblock content %}

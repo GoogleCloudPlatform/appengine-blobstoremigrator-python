@@ -1,0 +1,80 @@
+{% extends "global.html" %}
+
+{% block title -%}
+Delete Blobstore to Cloud Storage Mapping Entities
+{%- endblock title %}
+
+{% block h1 -%}
+Delete Blobstore to Cloud Storage mapping entities
+{%- endblock h1 %}
+
+{% block content %}
+  <p>
+    This form can be used to delete the mapping entities
+    stored in <code>{{mapping_kind}}</code>
+    that were created from previous migrations.
+    This can be useful if you need to
+    re-migrate all blobs, e.g., if you copied the blobs to an
+    incorrect bucket.
+  </p>
+
+  <div class="well">
+    <h4>Delete mappings</h4>
+
+    {% if pipeline_id %}
+
+      <p>
+        The pipeline to delete the <code>{{mapping_kind}}</code> entities
+        has been started.
+      </p>
+
+      <p>
+        <a href='/_ah/pipeline/status?root={{pipeline_id}}'><strong>View pipeline progress</strong></a>
+
+      </p>
+
+
+    {% else %}
+
+      <div class="butter bg-warning">
+        <strong>IMPORTANT!</strong>
+        Do not use this tool if you have already deleted the source
+        blobs! If you do, it will be extremely difficult to use
+        the new Cloud Storage files!
+      </div>
+
+      {% if message %}
+        <p class="butter bg-success">{{message|safe}}</p>
+      {% endif %}
+
+      {% if errors %}
+        <div class="butter bg-danger">
+          <p>
+            The following errors occurred:
+            <ul>
+              {% for error in errors %}
+                <li>{{error|safe}}</li>
+              {% endfor %}
+            </ul>
+          </p>
+        </div>
+      {% endif %}
+
+      <form class="form-horizontal" method="post">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="confirm">
+            Yes, I want to delete all the Blobstore to Cloud Storage mappings.
+          </label>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-0 col-sm-12">
+            <button type="submit" class="btn btn-default">Delete mappings</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  {% endif %}
+
+{% endblock content %}

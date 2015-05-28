@@ -14,7 +14,7 @@
 
 runtime: python27
 api_version: 1
-threadsafe: yes
+threadsafe: no  # allows larger chunks to be copied
 
 module: blob-migrator
 

@@ -35,6 +35,17 @@ ROUTES = [
   # webapp2.Route('/view-blobs', 'app.testviews.ViewBlobs'),
 
   ###
+  # The following views can be enabled to delete blobstore -> GCS mapping
+  # entities as well as all blobstore blobs.
+  #
+  # NOTE: These views must be used with caution as they will permanently
+  # destroy data!!!
+  ###
+  webapp2.Route('/delete-mapping-entities', 'app.views.DeleteMappingEntitiesView'),
+  webapp2.Route('/delete-source-blobs', 'app.views.DeleteSourceBlobsView'),
+
+
+  ###
   # Use this page to actually migrate blobs (you will get to submit a form).
   ###
   webapp2.Route('/', 'app.views.IndexView'),

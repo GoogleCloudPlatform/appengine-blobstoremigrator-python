@@ -33,7 +33,7 @@ import appengine_config
 
 # Controls the size of the chunk that is copied; i.e., this is the size
 # of the RAM that will hold the chunk of blob while copying.
-BLOB_BUFFER_SIZE = 1024*1024
+BLOB_BUFFER_SIZE = 8 * 1024 * 1024
 
 
 class BlobstoreDatastoreInputReader(input_readers.DatastoreInputReader):
@@ -217,7 +217,7 @@ def migrate_blob(blob_info, _mapper_params=None):
                                          blob_info.filename,
                                          blob_info.content_type,
                                          bucket_name)
-    pipeline.start()
+    pipeline.start(queue_name=config.config.QUEUE_NAME)
     yield counters.Increment('BlobInfo_migrated_via_secondary_pipeline')
 
   yield counters.Increment('BlobInfo_migrated')
