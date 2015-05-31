@@ -1,0 +1,72 @@
+
+
+{% macro mrstatus(pipeline_id) %}
+
+<div class="well" id="status-{{pipeline_id}}">
+  <h4>Pipeline status
+
+    <small class="pull-right">
+      <a href="/_ah/pipeline/status?root={{root_pipeline_id}}" target="_top"><strong>View pipeline dashboard</strong></a>
+    </small>
+  </h4>
+  <dl class="dl-horizontal">
+    <dt style="width: 200px; margin-right: 12px;"><strong>Pipeline ID</strong></dt>
+    <dd class='pipeline-id'>{{pipeline_id}}</dd>
+
+    <dt style="width: 200px; margin-right: 12px;"><strong>MapReduce ID</strong></dt>
+    <dd class='mapreduce-id'></dd>
+
+    <dt style="width: 200px; margin-right: 12px;"><strong>Pipeline Status</strong></dt>
+    <dd class='pipeline-status'></dd>
+
+    <dt style="width: 200px; margin-right: 12px;"><strong>MapReduce Status</strong></dt>
+    <dd class='mapreduce-status'></dd>
+
+    <dt style="width: 200px; margin-right: 12px;"><strong>MapReduce Active</strong></dt>
+    <dd class='mapreduce-active'></dd>
+
+    <dt style="width: 200px; margin-right: 12px;"><strong>Counters</strong></dt>
+    <dd>
+      <ul class="counters-list list-unstyled">
+      </ul>
+    </dd>
+
+  </dl>
+</div>
+{% endmacro %}
+
+{% macro mrstatusjs(pipeline_id, counter_names) %}
+  <script>
+    var url = "/status-info?pipelineId={{pipeline_id}}";
+    var statusInterval = setInterval(
+      function() {
+        $.get(url, function(data) {
+          var $status_div = $("#status-{{pipeline_id}}");
+          if (data.pipeline_status == "done" || data.pipeline_status == "aborted") {
+            clearInterval(statusInterval);
+            if (data.pipeline_status == "done") {
+              $status_div.addClass("background-success");
+            } else {
+              $status_div.addClass("background-failure");
+            }
+          }
+          $status_div.find(".pipeline-id").text(data.pipeline_id);
+          $status_div.find(".mapreduce-id").text(data.mapreduce_id);
+          $status_div.find(".pipeline-status").text(data.pipeline_status);
+          $status_div.find(".mapreduce-status").text(data.mapreduce_result_status);
+          $status_div.find(".mapreduce-active").text(data.mapreduce_active);
+          var $list = $status_div.find(".counters-list");
+          $list.empty();
+          {% for counter_name in counter_names %}
+            var counter_name = "{{counter_name}}".replace(/\_/g, ' ');
+            var counter_value = "0";
+            if (data.mapreduce_counters.{{counter_name}} != undefined) {
+              counter_value = data.mapreduce_counters.{{counter_name}};
+            }
+            $list.append("<li>" + counter_name + ": <strong>" + counter_value + "</strong></li>");
+          {% endfor %}
+      })},
+      2000
+    );
+  </script>
+{% endmacro %}

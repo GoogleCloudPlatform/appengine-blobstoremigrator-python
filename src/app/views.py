@@ -27,6 +27,7 @@ import webapp2
 
 from app import config
 from app import migrator
+from app import progress
 from app import scrubber
 import appengine_config
 
@@ -193,3 +194,10 @@ class DeleteSourceBlobsView(UserView):
       pipeline.start(queue_name=config.config.QUEUE_NAME)
       context['pipeline_id'] = pipeline.root_pipeline_id
     self.render_response('delete-blobs.html', **context)
+
+
+class StatusInfoHandler(JsonHandler):
+  def get(self):
+    pipeline_id = self.request.GET['pipelineId'].strip()
+    status = progress.get_status(pipeline_id)
+    self.emit_json(status)

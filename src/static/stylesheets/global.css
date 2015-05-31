@@ -26,3 +26,11 @@ pre {
   font-family: 'Inconsolata', "Courier New", Courier, monospace;
   font-size: 13px;
 }
+
+.background-success {
+  background-image: linear-gradient(to bottom,#beedbe 0,#f5f5f5 100%);
+}
+
+.background-failure {
+  background-image: linear-gradient(to bottom,#f2dede 0,#f5f5f5 100%);
+}

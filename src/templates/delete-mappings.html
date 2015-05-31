@@ -1,5 +1,7 @@
 {% extends "global.html" %}
 
+{% import "macros.html" as macros %}
+
 {% block title -%}
 Delete Blobstore to Cloud Storage Mapping Entities
 {%- endblock title %}
@@ -28,11 +30,7 @@ Delete Blobstore to Cloud Storage mapping entities
         has been started.
       </p>
 
-      <p>
-        <a href='/_ah/pipeline/status?root={{pipeline_id}}'><strong>View pipeline progress</strong></a>
-
-      </p>
-
+      {{ macros.mrstatus(pipeline_id) }}
 
     {% else %}
 
@@ -78,3 +76,7 @@ Delete Blobstore to Cloud Storage mapping entities
   {% endif %}
 
 {% endblock content %}
+
+{% block endbody %}
+  {{ macros.mrstatusjs(pipeline_id, ['Mapping_entities_deleted']) }}
+{% endblock endbody %}

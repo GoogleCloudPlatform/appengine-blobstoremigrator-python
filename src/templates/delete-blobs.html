@@ -1,5 +1,7 @@
 {% extends "global.html" %}
 
+{% import "macros.html" as macros %}
+
 {% block title -%}
 Delete Source Blobs
 {%- endblock title %}
@@ -24,11 +26,7 @@ Delete source blobs
         The pipeline to delete all blobs has been started.
       </p>
 
-      <p>
-        <a href='/_ah/pipeline/status?root={{pipeline_id}}'><strong>View pipeline progress</strong></a>
-
-      </p>
-
+      {{ macros.mrstatus(pipeline_id) }}
 
     {% else %}
 
@@ -84,3 +82,7 @@ Delete source blobs
   {% endif %}
 
 {% endblock content %}
+
+{% block endbody %}
+  {{ macros.mrstatusjs(pipeline_id, ['Blobs_deleted']) }}
+{% endblock endbody %}

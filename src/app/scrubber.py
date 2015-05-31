@@ -36,7 +36,7 @@ def delete_mapping_entity(mapping_entity_key):
     A MapReduce datastore delete operation.
   """
   yield db.Delete(mapping_entity_key)
-  yield counters.Increment('mapping_entities_deleted')
+  yield counters.Increment('Mapping_entities_deleted')
 
 
 class DeleteBlobstoreToGcsFilenameMappings(pipeline.Pipeline):
@@ -76,7 +76,7 @@ def delete_blobstore_blob(mapping_entity_key):
   """
   blob_key = blobstore.BlobKey(mapping_entity_key.name())
   blobstore.delete(blob_key)
-  yield counters.Increment('blobs_deleted')
+  yield counters.Increment('Blobs_deleted')
 
 
 class DeleteBlobstoreBlobs(pipeline.Pipeline):

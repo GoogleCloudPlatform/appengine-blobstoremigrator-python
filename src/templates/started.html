@@ -1,5 +1,7 @@
 {% extends "global.html" %}
 
+{% import "macros.html" as macros %}
+
 {% block title -%}
 Blob Migration Pipeline Started
 {%- endblock title %}
@@ -13,10 +15,7 @@ Blob migration pipeline started
     The Blob Migration Pipeline has been started.
   </p>
 
-  <p>
-    <a href='/_ah/pipeline/status?root={{root_pipeline_id}}'><strong>View pipeline progress</strong></a>
-
-  </p>
+  {{ macros.mrstatus(root_pipeline_id) }}
 
   <p>
     <strong>Important:</strong>
@@ -35,3 +34,7 @@ Blob migration pipeline started
     This tool will skip over any previously migrated blobs.
   </p>
 {% endblock content %}
+
+{% block endbody %}
+  {{ macros.mrstatusjs(root_pipeline_id, ['BlobInfo_considered_for_migration', 'BlobInfo_previously_migrated']) }}
+{% endblock endbody %}
