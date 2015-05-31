@@ -56,7 +56,7 @@ blobmigrator_ROOT_GCS_FOLDER = '_blobmigrator_root'
 #   Blobs smaller than this size will be directly copied within the
 #   MapperPipelines. Blobs larger than this size will be copied using
 #   a secondary MapperPipeline. Editing this value is not recommended.
-blobmigrator_DIRECT_MIGRATION_MAX_SIZE = 20 * 1024 * 1024
+blobmigrator_DIRECT_MIGRATION_MAX_SIZE = 2 * 1024 * 1024 * 1024
 
 # MAPPING_DATASTORE_KIND_NAME
 #   The name of the Datastore kind that will hold the mapping from old

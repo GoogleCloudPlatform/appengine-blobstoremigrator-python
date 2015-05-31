@@ -56,7 +56,7 @@ class _ConfigDefaults(object):
 
   ROOT_GCS_FOLDER = '_blobmigrator_root'
 
-  DIRECT_MIGRATION_MAX_SIZE = 20 * 1024 * 1024
+  DIRECT_MIGRATION_MAX_SIZE = 2 * 1024 * 1024 * 1024
 
   MAPPING_DATASTORE_KIND_NAME = '_blobmigrator_BlobKeyMapping'
 

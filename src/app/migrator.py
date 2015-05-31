@@ -33,6 +33,7 @@ import appengine_config
 
 # Controls the size of the chunk that is copied; i.e., this is the size
 # of the RAM that will hold the chunk of blob while copying.
+# This size has been tuned for a 128MiB F1 frontend.
 BLOB_BUFFER_SIZE = 8 * 1024 * 1024
 
 
