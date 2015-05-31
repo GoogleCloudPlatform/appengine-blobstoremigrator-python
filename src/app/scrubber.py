@@ -16,6 +16,7 @@
 Pipeline classes to delete Datastore entities and Blobstore entities.
 """
 
+from google.appengine.ext import blobstore
 from mapreduce import mapreduce_pipeline
 from mapreduce.operation import counters
 from mapreduce.operation import db
@@ -25,16 +26,16 @@ from app import config
 from app import models
 
 
-def delete_mapping_entity(mapping_entity):
+def delete_mapping_entity(mapping_entity_key):
   """Deletes the mapping entity.
 
   Args:
-    mapping_entity: The mapping entity to delete.
+    mapping_entity_key: The key of the mapping entity to delete.
 
   Yields:
     A MapReduce datastore delete operation.
   """
-  yield db.Delete(mapping_entity)
+  yield db.Delete(mapping_entity_key)
   yield counters.Increment('mapping_entities_deleted')
 
 
@@ -56,28 +57,26 @@ class DeleteBlobstoreToGcsFilenameMappings(pipeline.Pipeline):
       A MapperPipeline for the MapReduce job to delete the mapping entities.
     """
     params = {
-      'entity_kind': 'app.models.BlobKeyMapping',
+      'entity_kind': models.BlobKeyMapping._get_kind(),
     }
     yield mapreduce_pipeline.MapperPipeline(
       'delete_mapping_entities',
       'app.scrubber.delete_mapping_entity',
-      'mapreduce.input_readers.DatastoreInputReader',
+      'mapreduce.input_readers.DatastoreKeyInputReader',
       params=params,
       shards=config.config.NUM_SHARDS)
 
 
-def delete_blobstore_blob(blob_info):
-  """Deletes the blobstore blob if and only if a mapping entity exists.
+def delete_blobstore_blob(mapping_entity_key):
+  """Deletes the blobstore blob for the mapping_entity_key.
 
   Args:
-    blob_info: The BlobInfo for the blob to delete.
+    mapping_entity_key: The key of the mapping entity pointing to the blob
+      to delete.
   """
-  key = models.BlobKeyMapping.build_key(str(blob_info.key()))
-  if key.get():
-    blob_info.delete()
-    yield counters.Increment('blobs_deleted')
-  else:
-    yield counters.Increment('no_mapping_entity_found_blob_not_deleted')
+  blob_key = blobstore.BlobKey(mapping_entity_key.name())
+  blobstore.delete(blob_key)
+  yield counters.Increment('blobs_deleted')
 
 
 class DeleteBlobstoreBlobs(pipeline.Pipeline):
@@ -87,8 +86,10 @@ class DeleteBlobstoreBlobs(pipeline.Pipeline):
     """Deletes the blobstore blobs.
 
     Be extremely careful with this pipeline. This pipeline is used
-    to delete all the source blobstore blobs. You must ensure that the blobs
-    have been correctly migrated before invoking this pipeline.
+    to delete the blobstore blobs that have been migrated.
+
+    You must ensure that the blobs have been correctly migrated before
+    invoking this pipeline.
 
     THERE IS NO TURNING BACK!
 
@@ -96,11 +97,11 @@ class DeleteBlobstoreBlobs(pipeline.Pipeline):
       A MapperPipeline for the MapReduce job to delete the source blobs.
     """
     params = {
-      'entity_kind': 'google.appengine.ext.blobstore.blobstore.BlobInfo',
+      'entity_kind': models.BlobKeyMapping._get_kind(),
     }
     yield mapreduce_pipeline.MapperPipeline(
-      'delete_blobstore_blobs',
+      'delete_mapping_entities',
       'app.scrubber.delete_blobstore_blob',
-      'app.migrator.BlobstoreDatastoreInputReader',
+      'mapreduce.input_readers.DatastoreKeyInputReader',
       params=params,
       shards=config.config.NUM_SHARDS)

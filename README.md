@@ -89,7 +89,7 @@ remove all the `_blobmigrator_BlobKeyMapping` entities:
 ```
 
 **IMPORTANT** Do not use this tool if you have deleted your source
-blobs (see [*Deleting all blobs*](#deleting-all-blobs) below).
+blobs (see [*Deleting migrated blobs*](#deleting-migrated-blobs) below).
 If you delete these entities after the blobs have been deleted, then
 it will be extremely difficult to use the newly created
 Cloud Storage files.
@@ -103,9 +103,9 @@ the key mappings on Datastore (`MAPPING_DATASTORE_KIND_NAME`).
 Of course, if you edit these settings, you will need to re-upload this tool
 for the changes to take effect.
 
-## Deleting all blobs
+## Deleting migrated blobs
 
-You can use the following tool to delete *all* blobs in Blobstore.
+You can use the following tool to delete migrated blobs in Blobstore.
 Blobs are only deleted if a mapping `_blobmigrator_BlobKeyMapping`
 entity for the blob exists in Datastore.
 
@@ -113,8 +113,8 @@ entity for the blob exists in Datastore.
   https://migrator.blob-migrator.[application-id].appspot.com/delete-source-blobs
 ```
 
-**IMPORTANT** This action _permanently_ _deletes_ all blobs in Blobstore.
-Before using this tool, you must ensure that all the blobs have
+**IMPORTANT** This action _permanently_ _deletes_ migrated blobs in Blobstore.
+Before using this tool, you must ensure that the blobs have
 been migrated correctly to Cloud Storage and all the
 `_blobmigrator_BlobKeyMapping` entities have been created correctly.
 
