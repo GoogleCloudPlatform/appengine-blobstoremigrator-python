@@ -44,7 +44,7 @@ you can use the following commands in place of the above command:
 
   $ gcloud config set project [application-id]
 
-  $ gcloud preview app deploy src/app.yaml --version migrator
+  $ gcloud app deploy src/app.yaml --version migrator
 ```
 
 Once this tool is uploaded, simply hit the home page of the module.
